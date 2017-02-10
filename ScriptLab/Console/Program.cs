@@ -7,6 +7,7 @@ namespace ScriptLab
 	{
 		static void Main(string[] args)
 		{
+			Program.Compile (new Mine ());
 			Program.Compile (new Locals ());
 
 			//	Throws:
