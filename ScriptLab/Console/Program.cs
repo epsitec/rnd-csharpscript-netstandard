@@ -10,6 +10,17 @@ namespace ScriptLab
 			Program.Compile (new Mine ());
 			Program.Compile (new Locals ());
 
+			var watch = new System.Diagnostics.Stopwatch ();
+			watch.Start ();
+			for (int i = 0; i < 1000; i++)
+			{
+				Program.Compile (new Locals ());
+			}
+			watch.Stop ();
+
+			System.Console.WriteLine ("Time to compile and run is {0} us", watch.ElapsedMilliseconds);
+			System.Console.ReadLine ();
+
 			//	Throws:
 			//
 			//	An unhandled exception of type 'Microsoft.CodeAnalysis.Scripting.CompilationErrorException'
