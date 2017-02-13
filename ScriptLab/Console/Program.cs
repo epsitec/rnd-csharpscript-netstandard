@@ -10,16 +10,8 @@ namespace ScriptLab
 			Program.Compile (new Mine ());
 			Program.Compile (new Locals ());
 
-			var watch = new System.Diagnostics.Stopwatch ();
-			watch.Start ();
-			for (int i = 0; i < 1000; i++)
-			{
-				Program.Compile (new Locals ());
-			}
-			watch.Stop ();
-
-			System.Console.WriteLine ("Time to compile and run is {0} us", watch.ElapsedMilliseconds);
-			System.Console.ReadLine ();
+			Program.TimeIt1 (10);
+			Program.TimeIt2 (10);
 
 			//	Throws:
 			//
@@ -37,6 +29,44 @@ namespace ScriptLab
 		{ 
 			var func = ScriptCompiler.Compile<decimal> (@"UniversalConstant", globals);
 			System.Console.WriteLine (func ());
+		}
+
+		private static void TimeIt1(int count)
+		{
+			System.Console.WriteLine ("Using CSharpScript.Create every time:");
+
+			var watch = new System.Diagnostics.Stopwatch ();
+
+			watch.Start ();
+			for (int i = 0; i < count; i++)
+			{
+				Program.Compile (new Locals ());
+			}
+			watch.Stop ();
+
+			System.Console.WriteLine ("Time to compile and run is {0} ms", watch.ElapsedMilliseconds / count);
+			System.Console.ReadLine ();
+		}
+
+		private static void TimeIt2(int count)
+		{
+			System.Console.WriteLine ("Using CSharpScript.Create once and then only Script.ContineWith:");
+
+			var compiler = new StatefulScriptCompiler<decimal> ();
+			compiler.Setup (new Locals ());
+
+			var watch = new System.Diagnostics.Stopwatch ();
+
+			watch.Start ();
+			for (int i = 0; i < count; i++)
+			{
+				var func = compiler.Compile ("@UniversalConstant", new Locals ());
+				System.Console.WriteLine (func ());
+			}
+			watch.Stop ();
+
+			System.Console.WriteLine ("Time to compile and run is {0} ms", watch.ElapsedMilliseconds / count);
+			System.Console.ReadLine ();
 		}
 	}
 }
